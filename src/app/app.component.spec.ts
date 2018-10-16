@@ -3,6 +3,7 @@ import { AppComponent } from './app.component';
 import {HttpClientModule} from '@angular/common/http';
 import {HttpClientTestingModule, HttpTestingController} from '@angular/common/http/testing';
 import {DataService} from '../services/DataService';
+import {Data} from '@angular/router';
 
 
 describe('AppComponent', () => {
@@ -43,30 +44,36 @@ describe('Mock Http', () => {
       declarations: [
         AppComponent
       ],
-      providers: [ DataService ],
-      imports: [ HttpClientTestingModule ]
+      providers: [DataService],
+      imports: [HttpClientTestingModule]
     }).compileComponents();
   }));
 
-  // afterEach(inject([HttpTestingController], (httpMock: HttpTestingController) => {
-  //   httpMock.verify();
-  // }));
+  afterEach(inject([HttpTestingController], (httpMock: HttpTestingController) => {
+    httpMock.verify();
+  }));
 
-  it('should mock http request correctly', () => {
-    inject([DataService, HttpTestingController],
+  it('should mock http request correctly',
+    inject([HttpTestingController, DataService],
       (httpMock: HttpTestingController, service: DataService) => {
-        const req = httpMock.expectOne('assets/sampleData.json');
-        req.flush('intercepted');
-        const fixture = TestBed.createComponent(AppComponent);
-        fixture.detectChanges();
-        const compiled = fixture.debugElement.nativeElement;
-
         service.getData().subscribe(data => {
-          expect(data).toBe('derp');
+          expect(data).toBe('intercepted');
         });
 
+        const req = httpMock.expectOne('assets/sampleData.json');
+        req.flush('intercepted');
+      }));
 
+  it('should mock http request and check element correctly',
+    inject([HttpTestingController, DataService],
+      (httpMock: HttpTestingController, service: DataService) => {
+        const fixture = TestBed.createComponent(AppComponent);
+        fixture.detectChanges();
+
+        const compiled = fixture.debugElement.nativeElement;
+        const req = httpMock.expectOne('assets/sampleData.json');
+        req.flush('intercepted');
         expect(compiled.querySelector('h2').textContent).toContain('intercepted');
-      });
-  });
+      }));
+
 });
