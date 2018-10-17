@@ -1,4 +1,4 @@
-import { TestBed, async, inject } from '@angular/core/testing';
+import {TestBed, async, inject, ComponentFixture} from '@angular/core/testing';
 import { AppComponent } from './app.component';
 import {HttpClientModule} from '@angular/common/http';
 import {HttpClientTestingModule, HttpTestingController} from '@angular/common/http/testing';
@@ -39,6 +39,7 @@ describe('AppComponent', () => {
 });
 
 describe('Mock Http', () => {
+  let fixture: ComponentFixture<AppComponent>;
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [
@@ -47,6 +48,7 @@ describe('Mock Http', () => {
       providers: [DataService],
       imports: [HttpClientTestingModule]
     }).compileComponents();
+    fixture = TestBed.createComponent(AppComponent);
   }));
 
   afterEach(inject([HttpTestingController], (httpMock: HttpTestingController) => {
@@ -65,14 +67,14 @@ describe('Mock Http', () => {
       }));
 
   it('should mock http request and check element correctly',
-    inject([HttpTestingController, DataService],
-      (httpMock: HttpTestingController, service: DataService) => {
-        const fixture = TestBed.createComponent(AppComponent);
+    inject([HttpTestingController],
+      (httpMock: HttpTestingController) => {
+
+        const req = httpMock.expectOne('assets/sampleData.json');
+        req.flush({ 'SampleData': 'intercepted'});
         fixture.detectChanges();
 
         const compiled = fixture.debugElement.nativeElement;
-        const req = httpMock.expectOne('assets/sampleData.json');
-        req.flush('intercepted');
         expect(compiled.querySelector('h2').textContent).toContain('intercepted');
       }));
 
