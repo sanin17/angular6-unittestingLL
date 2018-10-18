@@ -48,7 +48,7 @@ describe('Mock Http', () => {
       providers: [DataService],
       imports: [HttpClientTestingModule]
     }).compileComponents();
-    fixture = TestBed.createComponent(AppComponent);
+
   }));
 
   afterEach(inject([HttpTestingController], (httpMock: HttpTestingController) => {
@@ -69,7 +69,7 @@ describe('Mock Http', () => {
   it('should mock http request and check element correctly',
     inject([HttpTestingController],
       (httpMock: HttpTestingController) => {
-
+        fixture = TestBed.createComponent(AppComponent);
         const req = httpMock.expectOne('assets/sampleData.json');
         req.flush({ 'SampleData': 'intercepted'});
         fixture.detectChanges();
