@@ -3,10 +3,12 @@ import { NgModule } from '@angular/core';
 
 import { AppComponent } from './app.component';
 import {HttpClientModule} from '@angular/common/http';
+import { StubsMocksSpiesComponent } from './components/stubs-mocks-spies/stubs-mocks-spies.component';
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    StubsMocksSpiesComponent
   ],
   imports: [
     BrowserModule,

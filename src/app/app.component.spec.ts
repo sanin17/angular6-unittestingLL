@@ -1,42 +1,11 @@
 import {TestBed, async, inject, ComponentFixture} from '@angular/core/testing';
-import { AppComponent } from './app.component';
+import {AppComponent} from './app.component';
 import {HttpClientModule} from '@angular/common/http';
 import {HttpClientTestingModule, HttpTestingController} from '@angular/common/http/testing';
 import {DataService} from '../services/DataService';
 import {Data} from '@angular/router';
+import {of} from 'rxjs';
 
-
-describe('AppComponent', () => {
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [
-        AppComponent
-      ],
-      providers: [ DataService ],
-      imports: [ HttpClientModule ]
-    }).compileComponents();
-  }));
-
-  it('should create the app', () => {
-    const fixture = TestBed.createComponent(AppComponent);
-    const app = fixture.debugElement.componentInstance;
-    expect(app).toBeTruthy();
-  });
-
-  it(`should have as title 'angular-tour-of-heroes'`, () => {
-    const fixture = TestBed.createComponent(AppComponent);
-    const app = fixture.debugElement.componentInstance;
-    expect(app.title).toEqual('angular-tour-of-heroes');
-  });
-
-  it('should render title in a h1 tag', () => {
-    const fixture = TestBed.createComponent(AppComponent);
-    fixture.detectChanges();
-    const compiled = fixture.debugElement.nativeElement;
-    expect(compiled.querySelector('h1').textContent).toContain('Welcome to angular-tour-of-heroes!');
-  });
-
-});
 
 describe('Mock Http', () => {
   let fixture: ComponentFixture<AppComponent>;
@@ -55,7 +24,7 @@ describe('Mock Http', () => {
     httpMock.verify();
   }));
 
-  it('should mock http request correctly',
+  it('should mock http request for Data Service',
     inject([HttpTestingController, DataService],
       (httpMock: HttpTestingController, service: DataService) => {
         service.getData().subscribe(data => {
@@ -66,12 +35,12 @@ describe('Mock Http', () => {
         req.flush('intercepted');
       }));
 
-  it('should mock http request and check element correctly',
+  it('should mock http request and render element correctly',
     inject([HttpTestingController],
       (httpMock: HttpTestingController) => {
         fixture = TestBed.createComponent(AppComponent);
         const req = httpMock.expectOne('assets/sampleData.json');
-        req.flush({ 'SampleData': 'intercepted'});
+        req.flush({'SampleData': 'intercepted'});
         fixture.detectChanges();
 
         const compiled = fixture.debugElement.nativeElement;
@@ -79,3 +48,6 @@ describe('Mock Http', () => {
       }));
 
 });
+
+
+
